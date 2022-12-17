@@ -1,8 +1,4 @@
-const mongoose = require("mongoose");
-const dbpath = require("./config/connection");
-mongoose.connect(dbpath.dbpath, () => {
-  console.log("Database Connected.");
-});
+
 
 const express = require("express");
 const path = require("path");
@@ -14,6 +10,14 @@ const userRoute = require("./routes/userRoute");
 
 
 const app = express();
+
+
+const mongoose = require("mongoose");
+const dbpath = require("./config/connection");
+mongoose.connect(dbpath.dbpath, () => {
+  console.log("Database Connected.");
+});
+
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public/user")));
