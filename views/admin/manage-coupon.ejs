@@ -1,0 +1,82 @@
+<section>
+
+    <div class="container" style="margin-top: 5em;">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="text-center">Add Coupon</h2>
+          <form action="/admin/add-coupon" method="post" >  
+          <label for="">Coupon</label>
+            <input type="text" name="coupon" placeholder="Enter coupon name" class="form-control" />
+            <label for="">Discount</label>
+            <input type="text" name="discount" placeholder="Enter discount" class="form-control" />
+            <button type="submit" class="btn btn-success mt-4 mb-2">Submit</button>
+          </form>
+  
+        </div>
+        <table id="view-category" class="table mt-3">
+          <thead>
+              <tr>
+                  <th scope="col">Sl No</th>
+                  <th scope="col">Coupon</th>
+                  <th scope="col">Discount</th>
+
+            
+                  <th scope="col">Delete</th>
+
+
+              </tr>
+          </thead>
+          <tbody>
+          <tbody>
+              <% if( coupon.length>= 0){ %>
+                  <% for(let i=1;i <=coupon.length; i++){ %>
+                      <tr>
+                          <td>
+                              <%= i %>
+                          </td>
+
+                          <td>
+                              <div class="d-flex align-items-center">
+                                  <div class="m-r-10"><a class="btn btn-circle d-flex btn-info text-white"><i
+                                              class=" mdi mdi-account-circle"></i></a>
+                                  </div>
+                                  <div class="">
+                                      <h6 class="m-b-0 font-16">
+                                          <%=coupon[i-1].name %>
+                                      </h6>
+                                  </div>
+                              </div>
+                          </td>
+                          
+                          <td>
+                            <div class="d-flex align-items-center">
+                                <div class="m-r-10"><a class="btn btn-circle d-flex btn-info text-white"><i
+                                            class=" mdi mdi-account-circle"></i></a>
+                                </div>
+                                <div class="">
+                                    <h6 class="m-b-0 font-16">
+                                        <%=coupon[i-1].discount %>
+                                    </h6>
+                                </div>
+                            </div>
+                        </td>
+                          <form action="/admin/delete-coupon?id=<%= coupon[i-1]._id %>" method="post">
+                            <td><button type="submit" class=" btn btn-primary">Delete</button></td>
+                        </form>
+                
+
+                
+                    
+                         
+                          
+                      <% } } else{ %>
+                          <tr>
+                              <td colspan="5">Coupon Not Found</td>
+                          </tr>
+                          <% } %>
+
+          </tbody>
+      </table>
+      </div>
+    </div>
+  </section>

@@ -1,0 +1,113 @@
+<section style="margin-top: 7em; ">
+    <div class="container-fluid" >
+      
+        
+
+<div class="container-fluid" >
+  <div class="row d-inline-flex">
+    <div class="col d-inline-flex">
+     <a class="btn btn-secondary" href="/admin/add-product" role="button">Add New Product</a>
+     
+  
+</div> 
+    </div>
+    <div class="col-6 d-inline-flex">
+      <form class="form-inline">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+  </form>
+    </div>
+    <div class="col">
+     
+    </div>
+  </div>
+
+</div>
+
+
+        <table class="table mt-3">
+  <thead>
+    <tr>
+      <th scope="col">Sl No</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Category</th>
+      
+      <th scope="col">Description</th>
+      <th scope="col">Image</th>
+      <th scope="col">Price</th>
+      <th scope="col">Action</th>
+     
+      
+    </tr>
+  </thead>
+  <tbody>
+    <% if( products.length> 0){ %>
+      <% for(let i=1;i <=products.length; i++){ %>
+          <tr>
+              <th scope="row">
+                  <%= i %>
+              </th>
+              <td>
+                  <%= products[i-1].Name %>
+              </td>
+              <td>
+                  <%= products[i-1].Category %>
+              </td>
+             
+              <td>
+                  <%= products[i-1].Description.trim() %>
+              </td>
+              
+              <td>
+                  <% if(products[i-1].image) { %>
+                      <img src="/admin/images/<%= products[i-1].image %>"
+                          width="40vw" height="40vh">
+                      <% }else{ %>
+                          Image Not Found
+                          <% } %>
+              </td>
+              <td>
+                <%= products[i-1].Price %>
+            </td>
+              <td><a href="/admin/edit-product?id=<%= products[i-1]._id %>"><i
+                          style="color: green;"
+                          class="m-r-5 mdi mdi-border-color"></i>Edit</a><br><a
+                      data-toggle="modal" style="color: red"; data-target="
+                      #exampleModal" href="#"><i
+                          class=" m-r-5 mdi mdi-delete-forever"></i>Delete</a>
+              </td>
+          </tr>
+          <!-- model bootstrap -->
+          <div class="modal fade" id="exampleModal"  tabindex="-1" role="dialog"
+              aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                  <div class="modal-content" >
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalLabel">Delete
+                              The Item ?</h5> <button type="button" class="close"
+                              data-dismiss="modal" aria-label="Close"> <span
+                                  aria-hidden="true">×</span> </button>
+                      </div>
+                      <div class="modal-body"> Are you sure you want to delete the
+                          item : <strong>
+                              <%= products[i-1].productName %>
+                          </strong> </div>
+                      <div class="modal-footer"> <button type="button"
+                              class="btn btn-secondary"
+                              data-dismiss="modal">Close</button> <a
+                              href="/admin/delete-product?id=<%= products[i-1]._id %>"
+                              type="button" class="btn btn-danger">Delete Item</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          <% }} else { %>
+              <tr>
+                  <td colspan="5">no products exists</td>
+              </tr>
+              <% } %>
+
+  </tbody>
+</table>
+    </div>
+</section>

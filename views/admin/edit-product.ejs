@@ -1,0 +1,30 @@
+<section>
+
+  <div class="container" style="margin-top: 5em;">
+    <div class="row">
+      <div class="col-md-6">
+        <h2 class="text-center">Edit Product</h2>
+        <form action="/admin/edit-product" method="post" enctype="multipart/form-data">  
+        <label for="">Product Serial Number</label>
+          <input type="text" name="Serial" value="<%= product.Serial %>" class="form-control" />
+          <label for="">Product Name</label>
+          <input type="text" name="Name" value="<%= product.Name %>" class="form-control" />
+          <label for="">Product Category</label>
+          <input type="text" name="Category" value="<%=product.Category%>" class="form-control" />
+          <label for="">Price</label>
+          <input type="text" name="Price"value="<%=product.Price%>" class="form-control" />
+          <label for="">Description</label>
+          <input type="text" name="Description" value="<%=product.Description%>" class="form-control" />
+          <label for="">Image</label>
+          <input type="file" name="image" class="form-control" />
+          <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                        <input type="hidden" name="id" value="<%= product._id %>">
+                                      <button type="submit" value="Update Product" class="btn btn-primary btn-lg">Save</button>
+                                      <a href="/admin/view-products" class="btn btn-primary ml-2 btn-lg">Go Back</a>
+                                    </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+</section>

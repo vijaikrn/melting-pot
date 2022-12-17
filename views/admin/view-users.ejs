@@ -1,0 +1,109 @@
+<section>
+    <div class="container" style="margin-top: 7em;">
+
+
+
+
+        <div class="container">
+            <div class="row">
+
+                <div class="col-6">
+                    <form class="form-inline">
+                        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                            name="search">
+                        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                    </form>
+                </div>
+                <div class="col">
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <table id="" class="table mt-3">
+            <thead>
+                <tr>
+                    <th scope="col">Sl No</th>
+                    <th scope="col">User Name</th>
+                    <th scope="col">User email</th>
+                    <th scope="col">User Mobile</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Edit</th>
+
+
+                </tr>
+            </thead>
+            <tbody>
+            <tbody>
+                <% if( users.length> 0){ %>
+                    <% for(let i=1;i <=users.length; i++){ %>
+                        <tr>
+                            <td>
+                                <%= i %>
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="m-r-10"><a class="btn btn-circle d-flex btn-info text-white"><i
+                                                class=" mdi mdi-account-circle"></i></a>
+                                    </div>
+                                    <div class="">
+                                        <h4 class="m-b-0 font-16">
+                                            <%= users[i-1].name %>
+                                        </h4>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <%= users[i-1].email %>
+                            </td>
+                            <td>
+                                <%= users[i-1].mobile %>
+                            </td>
+                            <td>
+                                <% if(users[i-1].isVerified) { %>
+                                    <label class="btn-success">
+                                        <i class="m-r-10 mdi mdi-account">UnBlocked</i></label>
+                                    <% } else { %>
+                                        <label class="btn-danger">
+                                            <i class="m-r-10 mdi mdi-account-off">Blocked</i></label>
+                                        <% } %>
+                                            </label>
+                            </td>
+
+                            <td>
+                                <!-- Default switch -->
+
+                                <% if(users[i-1].isVerified) { %>
+                                    <a class="btn btn-danger text-white"
+                                        href="/admin/block-user?id=<%= users[i-1]._id %> ">Block</a>
+                                    <% } else { %>
+                                        <a class="btn btn-info"
+                                            href="/admin/block-user?id=<%= users[i-1]._id %> ">Unblock</a>
+                                        <% } %>
+                            </td>
+                        </tr>
+                        <% } } else{ %>
+                            <tr>
+                                <td colspan="5">Users Not Found</td>
+                            </tr>
+                            <% } %>
+
+            </tbody>
+        </table>
+        <br>
+        <% if(currentpage != 1){ %>
+            <a  href="?page=<%=prev%>" class="btn btn-primary"><</a>
+        
+        <% } %>
+        <% for(let j=1;j<=totalPages;j++){ %>
+            <a  href="?page=<%=j%>" class="btn btn-primary">
+                <%=j%> 
+            </a>
+            <% }%>
+            <a  href="?page=<%=next%>" class="btn btn-primary">></a>
+                <br>
+    </div>
+</section>

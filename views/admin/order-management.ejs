@@ -1,0 +1,175 @@
+<section  class="vh-100" style=" margin-top: 5em; margin-left: 2em;margin-right: 5em;">
+    <div class="btn-group" role="group" aria-label="Basic example "  style="margin-left: 9em;">
+        <form action="/admin/order-management?id=ALL" method="post">
+            <button type="sumbit" class="btn btn-secondary" style="margin-right: 1em;">All Orders</button>
+        </form>
+        <form action="/admin/order-management?id=CONFIRMED" method="post">
+            <button type="submit" class="btn btn-info" style="margin-right: 1em;">Confirmed</button>
+        </form>
+        <!-- <form action="/admin/adminOrder?id=CANCELLED">
+            <button type="button" class="btn btn-danger" style="margin-right: 1em;">Cancelled</button>
+        </form> -->
+        <form action="/admin/order-management?id=DELIVERED" method="post">
+            <button type="submit" class="btn btn-success" style="margin-right: 1em;">Delivered</button>
+        </form>
+        
+      
+       
+      </div>
+      
+      <% if(id=='CONFIRMED' ){ %>
+    <table class="table" style="margin-left: 1em;">
+        <thead>
+          <tr>
+            <th scope="col">Sl</th>
+            <th scope="col">Order Id</th>
+            
+            <th scope="col">Payment</th>
+            <th scope="col">Price</th>
+            <th scope="col">Order Date</th>
+            <th scope="col">Status</th>
+            <th scope="col">Deliver</th>
+            <th scope="col">Cancel</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% if( order.length>= 0){ %>
+                <% for(let i=1;i <=order.length; i++){ %>
+                    <% if(order[i-1].status =="confirmed"){ %>
+          <tr>
+            
+            <td><%= i %></td>
+            
+            <td><%=order[i-1]._id %></td>
+            
+            <td><%=order[i-1].payment %></td>
+            <td><%=order[i-1].totalPrice %></td>
+            <td><%=order[i-1].createdAt %></td>
+            <td><%=order[i-1].status %></td>
+            
+            
+                <form action="/admin/deliver-order?id=<%= order[i-1]._id %>" method="post">
+                    <td><button type="submit" class="btn btn-success">Deliver</button></td>
+                </form>
+
+                <form action="/admin/cancel-order?id=<%=order[i-1]._id%>" method="post">
+                <td><button type="submit" class="btn btn-danger">Cancel</button></td>
+                </form>
+                
+            
+        
+          </tr>
+          <% }}}else{ %>
+                          <tr>
+                              <td colspan="5">Orders Not Found</td>
+                          </tr>
+                          <% } %>
+        </tbody>
+      </table>
+</section>
+<% }else if(id=='DELIVERED' ){ %>
+
+<section class="vh-100" style=" margin-top: 5em; margin-left: 2em;margin-right: 5em;">
+    <table class="table" style="margin-left: 1em;">
+        <thead>
+          <tr>
+            <th scope="col">Sl</th>
+            <th scope="col">Order Id</th>
+            
+            <th scope="col">Payment</th>
+            <th scope="col">Price</th>
+            <th scope="col">Order Date</th>
+            <th scope="col">Status</th>
+            <!-- <th scope="col">Confirm</th> -->
+            <th scope="col">Cancel</th>
+          </tr>
+        </thead>
+        <tbody>
+            <% if( order.length>= 0){ %>
+                <% for(let i=1;i <=order.length; i++){ %>
+                    <% if(order[i-1].status =="delivered"){ %>
+          <tr>
+            
+            <td><%= i %></td>
+            
+            <td><%=order[i-1]._id %></td>
+            
+            <td><%=order[i-1].payment %></td>
+            <td><%=order[i-1].totalPrice %></td>
+            <td><%=order[i-1].createdAt %></td>
+            <td><%=order[i-1].status %></td>
+            
+            
+                <!-- <form action="/admin/confirm-order?id=<%= order[i-1]._id %>" method="post">
+                    <td><button type="submit" class="btn btn-success">Confirm</button></td>
+                </form> -->
+
+                <form action="/admin/cancel-order?id=<%=order[i-1]._id%>" method="post">
+                <td><button type="submit" class="btn btn-danger">Cancel</button></td>
+                </form>
+                
+            
+        
+          </tr>
+          <% }}}else{ %>
+                          <tr>
+                              <td colspan="5">Orders Not Found</td>
+                          </tr>
+                          <% } %>
+        </tbody>
+      </table>
+
+</section>
+<% }else{ %>
+
+    <section class="vh-100" style=" margin-top: 5em; margin-left: 2em;margin-right: 5em;">
+        <table class="table" style="margin-left: 1em;">
+            <thead>
+              <tr>
+                <th scope="col">Sl</th>
+                <th scope="col">Order Id</th>
+                
+                <th scope="col">Payment</th>
+                <th scope="col">Price</th>
+                <th scope="col">Order Date</th>
+                <th scope="col">Status</th>
+                <th scope="col">Confirm</th>
+                <th scope="col">Cancel</th>
+              </tr>
+            </thead>
+            <tbody>
+                <% if( order.length>= 0){ %>
+                    <% for(let i=1;i <=order.length; i++){ %>
+                        
+              <tr>
+                
+                <td><%= i %></td>
+                
+                <td><%=order[i-1]._id %></td>
+                
+                <td><%=order[i-1].payment %></td>
+                <td><%=order[i-1].totalPrice %></td>
+                <td><%=order[i-1].createdAt %></td>
+                <td><%=order[i-1].status %></td>
+                
+                
+                    <form action="/admin/confirm-order?id=<%= order[i-1]._id %>" method="post">
+                        <td><button type="submit" class="btn btn-success">Confirm</button></td>
+                    </form>
+    
+                    <form action="/admin/cancel-order?id=<%=order[i-1]._id%>" method="post">
+                    <td><button type="submit" class="btn btn-danger">Cancel</button></td>
+                    </form>
+                    
+                
+            
+              </tr>
+              <% }}else{ %>
+                              <tr>
+                                  <td colspan="5">Orders Not Found</td>
+                              </tr>
+                              <% } %>
+            </tbody>
+          </table>
+          <% } %>
+    </section>
