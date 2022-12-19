@@ -30,7 +30,7 @@ adminRoute.get("/edit-product",authAdmin.isLogin, adminController.editProduct);
 
 adminRoute.post("/edit-product",adminController.upload, adminController.editProductPost);
 
-adminRoute.get('/delete-product',authAdmin.isLogin,adminController.deleteProduct)
+adminRoute.get('/delete-product',authAdmin.isLogin,adminController.deleteProducts)
 
 adminRoute.get('/block-user',authAdmin.isLogin,adminController.blockUser)
 

@@ -26,19 +26,19 @@
             <thead>
                 <tr>
                     <th scope="col">Sl No</th>
-                    <th scope="col">User Name</th>
-                    <th scope="col">User email</th>
-                    <th scope="col">User Mobile</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Edit</th>
+                    <th scope="col">email</th>
+                    <th scope="col">payment</th>
+                    <th scope="col">status</th>
+                    <th scope="col">total price</th>
+                    <!-- <th scope="col">Edit</th> -->
 
 
                 </tr>
             </thead>
             <tbody>
             <tbody>
-                <% if( users.length> 0){ %>
-                    <% for(let i=1;i <=users.length; i++){ %>
+                <% if( orders.length> 0){ %>
+                    <% for(let i=1;i <=orders.length; i++){ %>
                         <tr>
                             <td>
                                 <%= i %>
@@ -50,40 +50,24 @@
                                                 class=" mdi mdi-account-circle"></i></a>
                                     </div>
                                     <div class="">
-                                        <h4 class="m-b-0 font-16">
-                                            <%= users[i-1].name %>
-                                        </h4>
+                                        <h6 class="m-b-0 font-16">
+                                            <%= orders[i-1].email %>
+                                        </h6>
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                <%= users[i-1].email %>
+                                <%= orders[i-1].payment %>
                             </td>
                             <td>
-                                <%= users[i-1].mobile %>
+                                <%= orders[i-1].status %>
                             </td>
                             <td>
-                                <% if(users[i-1].isVerified) { %>
-                                    <label class="btn-success">
-                                        <i class="m-r-10 mdi mdi-account">UnBlocked</i></label>
-                                    <% } else { %>
-                                        <label class="btn-danger">
-                                            <i class="m-r-10 mdi mdi-account-off">Blocked</i></label>
-                                        <% } %>
-                                            </label>
+                                <%= orders[i-1].totalPrice %>
                             </td>
 
-                            <td>
-                                <!-- Default switch -->
 
-                                <% if(users[i-1].isVerified) { %>
-                                    <a class="btn btn-danger text-white"
-                                        href="/admin/block-user?id=<%= users[i-1]._id %> ">Block</a>
-                                    <% } else { %>
-                                        <a class="btn btn-info"
-                                            href="/admin/block-user?id=<%= users[i-1]._id %> ">Unblock</a>
-                                        <% } %>
-                            </td>
+                            
                         </tr>
                         <% } } else{ %>
                             <tr>
@@ -95,21 +79,15 @@
         </table>
         <br>
         <% if(currentpage != 1){ %>
-            <a  href="?page=<%=prev%>" class="btn btn-primary"><</a>
+            <a  href="?page=<%=prev%>" class="btn btn-primary">prev</a>
         
         <% } %>
         <% for(let j=1;j<=totalPages;j++){ %>
-            <% if(j==currentpage) {%> 
-            <a  href="?page=<%=j%>" class="btn btn-warning">
-                <%=j%> 
-            </a>
-            <% }else{ %>
             <a  href="?page=<%=j%>" class="btn btn-primary">
                 <%=j%> 
             </a>
-                 <% } %>
             <% }%>
-            <a  href="?page=<%=next%>" class="btn btn-primary">></a>
+            <a  href="?page=<%=next%>" class="btn btn-primary">next</a>
                 <br>
     </div>
 </section>

@@ -26,34 +26,36 @@ userRoute.post("/signup", userController.userSignup);
 
 userRoute.get('/logout',auth.isLogin,userController.userLogout)
 
-userRoute.get('/add-to-cart',userController.addToCart)
+userRoute.get('/add-to-cart',auth.isLogin,userController.addToCart)
 
-userRoute.post('/add-to-cart',userController.addToCart)
+userRoute.post('/add-to-cart',auth.isLogin,userController.addToCart)
 
-userRoute.get('/user-cart',userController.loadCart)
+userRoute.get('/user-cart',auth.isLogin,userController.loadCart)
 
-userRoute.post('/updateQuantity',userController.updateQuantity)
+userRoute.post('/updateQuantity',auth.isLogin,userController.updateQuantity)
 
-userRoute.get('/delete-cart',userController.deleteCart)
+userRoute.get('/delete-cart',auth.isLogin,userController.deleteCart)
 
-userRoute.post('/delete-cart',userController.deleteCart)
+userRoute.post('/delete-cart',auth.isLogin,userController.deleteCart)
 
 userRoute.get('/category',userController.selectCategory)
 
-userRoute.get('/otp-validation',userController.validateUser)
+userRoute.get('/otp-validation',auth.isLogin,userController.validateUser)
 
-userRoute.post('/otp-validation',userController.validateUser)
+userRoute.post('/otp-validation',auth.isLogin,userController.validateUser)
 
-userRoute.get('/postCheckout',userController.getCheckout)
+userRoute.get('/postCheckout',auth.isLogin,userController.getCheckout)
 
-userRoute.post('/postCheckout',userController.postCheckout)
+userRoute.post('/postCheckout',auth.isLogin,userController.postCheckout)
 
-userRoute.get('/paypal',userController.paypal)
+userRoute.get('/paypal',auth.isLogin,userController.paypal)
 
-userRoute.get('/orderplaced',userController.ordersuccesful)
+userRoute.get('/orderplaced',auth.isLogin,userController.ordersuccesful)
 
-userRoute.post('/apply-coupon',userController.applycoupon)
+userRoute.post('/apply-coupon',auth.isLogin,userController.applycoupon)
 
 userRoute.get('/product-detail',userController.viewProductDetails)
+
+userRoute.get('/order-history',auth.isLogin,userController.OrderHistory)
 
 module.exports = userRoute;

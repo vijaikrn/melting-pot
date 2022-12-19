@@ -13,6 +13,8 @@ const productSchema = new mongoose.Schema({
 
   image: { type: String, required: true },
 
+  isAvailable:{type:Number ,default:1}
+
   
 });
 

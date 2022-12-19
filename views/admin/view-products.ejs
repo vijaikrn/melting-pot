@@ -43,6 +43,7 @@
   <tbody>
     <% if( products.length> 0){ %>
       <% for(let i=1;i <=products.length; i++){ %>
+        <% if(products[i-1].isAvailable==1) {%> 
           <tr>
               <th scope="row">
                   <%= i %>
@@ -101,7 +102,7 @@
                   </div>
               </div>
           </div>
-          <% }} else { %>
+          <% }}} else { %>
               <tr>
                   <td colspan="5">no products exists</td>
               </tr>

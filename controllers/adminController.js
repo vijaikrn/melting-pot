@@ -151,13 +151,6 @@ const adminLogout = async (req, res) => {
   }
 };
 
-const deleteProducts = async (req, res) => {
-  const id = req.query.id;
-  const deletedProduct = await Product.deleteOne({_id:id})
-
-  res.redirect("/admin");
-};
-
 const viewUsers = async (req, res) => {
   var search = "";
   if (req.query.search) {
@@ -238,14 +231,23 @@ const editProductPost = async (req, res) => {
   }
 };
 
-const deleteProduct = async (req, res) => {
-  try {
-    const id = req.query.id;
-    const productData = await Product.deleteOne({ _id: id });
-    res.redirect("/admin");
-  } catch (error) {
-    console.log(error.message);
-  }
+// const deleteProduct = async (req, res) => {
+//   try {
+//     const id = req.query.id;
+//     const productData = await Product.deleteOne({ _id: id });
+//     res.redirect("/admin");
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// };
+const deleteProducts = async (req, res) => {
+  const id = req.query.id;
+  const deletedProduct = await Product.findOneAndUpdate(
+    { _id: id },
+    { $set: { isAvailable: 0 } }
+  );
+
+  res.redirect("/admin");
 };
 
 const blockUser = async (req, res) => {
@@ -358,82 +360,85 @@ const manageCouponGet = async (req, res) => {
   }
 };
 
-const addCoupon = async(req,res)=>{
+const addCoupon = async (req, res) => {
   try {
     const coupon = new Coupon({
-      name:req.body.coupon,
-      discount:req.body.discount
-    }) 
+      name: req.body.coupon,
+      discount: req.body.discount,
+    });
     const couponData = await coupon.save();
-    if(couponData){
-      admin:true
-      res.redirect('/admin/manage-coupon')
-    }else{
-      admin:true
-    res.redirect('/admin/manage-coupon')
+    if (couponData) {
+      admin: true;
+      res.redirect("/admin/manage-coupon");
+    } else {
+      admin: true;
+      res.redirect("/admin/manage-coupon");
     }
-  } catch (error) {
-    console.log(error.message)
-  }
-}
-
-const deleteCoupon = async(req,res)=>{
-  try {
-    const id = req.query.id
-    const couponData = await Coupon.deleteOne({_id:id})
-    res.redirect('/admin/manage-coupon')
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
-const loadAdminHome = async(req,res)=>{
+const deleteCoupon = async (req, res) => {
   try {
-      adminSession = req.session
-      // const userData = await User.findById({_id:adminSession.userId})
-      if(adminSession.userId){
-          const categoryData = await Category.find()
-          const categoryArray = []
-          const orderGenreCount = []
-          for(let key of categoryData){
-              categoryArray.push(key.Category)
-              orderGenreCount.push(0)
-          }
-          const completeorder = []
-          const orderData =await Order.find()
-
-          for(let key of orderData){
-              const uppend = await key.populate('product.productID')
-              completeorder.push(uppend)
-              
-          }
-          
-          for(let i=0;i<completeorder.length;i++){
-              for(let j = 0;j<completeorder[i].product.length;j++){
-                 const genre = completeorder[i].product[j].productID.Category
-                 const isExisting = categoryArray.findIndex(category => {
-                  return category === genre
-                 })
-                 orderGenreCount[isExisting]++
-          }}
-
-          console.log('categoryArray:',categoryArray);
-          console.log('orderGenreCount:',orderGenreCount);
-          // console.log('genre: ',completeorder[0].products[0].productID.Category);
-
-          const productData = await Product.find()
-          const userData = await User.find()
-          res.render('admin/admin-panel',{admin:true,products:productData,users:userData,category:categoryArray,count:orderGenreCount})
-      }
-      else{
-          res.redirect('/admin/login')
-      }
-
-
+    const id = req.query.id;
+    const couponData = await Coupon.deleteOne({ _id: id });
+    res.redirect("/admin/manage-coupon");
   } catch (error) {
-      console.log(error.message);
+    console.log(error.message);
   }
-}
+};
+
+const loadAdminHome = async (req, res) => {
+  try {
+    adminSession = req.session;
+    // const userData = await User.findById({_id:adminSession.userId})
+    if (adminSession.userId) {
+      const categoryData = await Category.find();
+      const categoryArray = [];
+      const orderGenreCount = [];
+      for (let key of categoryData) {
+        categoryArray.push(key.Category);
+        orderGenreCount.push(0);
+      }
+      const completeorder = [];
+      const orderData = await Order.find();
+
+      for (let key of orderData) {
+        const uppend = await key.populate("product.productID");
+        completeorder.push(uppend);
+      }
+
+      for (let i = 0; i < completeorder.length; i++) {
+        for (let j = 0; j < completeorder[i].product.length; j++) {
+          const genre = completeorder[i].product[j].productID.Category;
+          const isExisting = categoryArray.findIndex((category) => {
+            return category === genre;
+          });
+          orderGenreCount[isExisting]++;
+        }
+      }
+
+      console.log("categoryArray:", categoryArray);
+      console.log("orderGenreCount:", orderGenreCount);
+      // console.log('genre: ',completeorder[0].products[0].productID.Category);
+
+      const productData = await Product.find();
+      const userData = await User.find();
+      res.render("admin/admin-panel", {
+        admin: true,
+        products: productData,
+        users: userData,
+        category: categoryArray,
+        count: orderGenreCount,
+      });
+    } else {
+      res.redirect("/admin/login");
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 module.exports = {
   insertProduct,
@@ -447,7 +452,7 @@ module.exports = {
   viewUsers,
   editProduct,
   editProductPost,
-  deleteProduct,
+ 
   blockUser,
   addCategory,
   addCategoryGet,
@@ -459,5 +464,5 @@ module.exports = {
   manageCouponGet,
   addCoupon,
   deleteCoupon,
-  loadAdminHome
+  loadAdminHome,
 };

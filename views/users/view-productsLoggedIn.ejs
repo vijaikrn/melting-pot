@@ -308,6 +308,7 @@
 
 			<div class="row isotope-grid">
                 <% for(let i=1;i <=products.length; i++){ %>
+					<% if(products[i-1].isAvailable==1) {%> 
 				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
 					<!-- Block2 -->
 					<div class="block2">
@@ -344,18 +345,27 @@
 						</div>
 					</div>
 				</div>
-				<% } %>
+				<% }} %>
 			</div>
 	<!-- Load more -->
 	<div class="flex-c-m flex-w w-full p-t-45">
+		<% if(currentpage != 1){ %>
+			<a  href="?page=<%=prev%>" class="btn btn-primary"><</a>
+		
+		<% } %>
 		<% for(let j=1;j<=totalPages;j++){ %>
+			<% if(j==currentpage) {%> 
+			<a  href="?page=<%=j%>" class="btn btn-warning">
+				<%=j%> 
+			</a>
+			<% }else{ %>
 			<a  href="?page=<%=j%>" class="btn btn-primary">
 				<%=j%> 
 			</a>
+				 <% } %>
 			<% }%>
-			
-					
-						<br>
+			<a  href="?page=<%=next%>" class="btn btn-primary">></a>
+				<br>
 			</div>
 		</div>
 	</section>

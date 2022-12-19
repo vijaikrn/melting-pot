@@ -5,14 +5,13 @@ const Cart = require("../models/cart-model");
 const bcrypt = require("bcrypt");
 const fast2sms = require("fast-two-sms");
 const Order = require("../models/order-model");
-const Coupon = require('../models/coupon-model')
+const Coupon = require("../models/coupon-model");
 let isLoggedIn;
 isLoggedIn = false;
 let userSession = false || {};
 let USERID;
-let coupon
-let discountedPrice = null
-
+let coupon;
+let discountedPrice = null;
 
 const securePassword = async (password) => {
   try {
@@ -107,8 +106,7 @@ const userVerifyLogin = async (req, res) => {
 
 const userHomePage = async (req, res) => {
   userSession = req.session;
-  
- 
+
   var search = "";
   if (req.query.search) {
     search = req.query.search;
@@ -244,6 +242,7 @@ const addToCart = async (req, res) => {
       });
 
       await cart.save();
+      console.log(cart)
       res.redirect("/home");
     }
   } catch (error) {
@@ -257,23 +256,22 @@ const loadCart = async (req, res) => {
   const userCart = await Cart.findOne({ userID: userSession.userId }).populate(
     "product.productID"
   );
-  
-if(userCart.product.length==0){
-  res.render("users/user-cart", {
-    cart: userCart.product,
-    isLoggedIn,
-    admin: false,
-    totalprice: 0,
-  });
-}else if(userCart.product.length!=0){
-  res.render("users/user-cart", {
-    cart: userCart.product,
-    isLoggedIn,
-    admin: false,
-    totalprice: totalCart.totalPrice,
-  });
-}
-  
+
+  if (userCart.product.length == 0) {
+    res.render("users/user-cart", {
+      cart: userCart.product,
+      isLoggedIn,
+      admin: false,
+      totalprice: 0,
+    });
+  } else if (userCart.product.length != 0) {
+    res.render("users/user-cart", {
+      cart: userCart.product,
+      isLoggedIn,
+      admin: false,
+      totalprice: totalCart.totalPrice,
+    });
+  }
 };
 
 const updateQuantity = async (req, res) => {
@@ -308,17 +306,20 @@ const deleteCart = async (req, res) => {
   try {
     userSession = req.session;
 
-
     const cartData = await Cart.findOneAndUpdate(
       { userID: userSession.userId },
       { $pull: { product: { _id: req.query.id } } }
     );
-    
-    if(cartData.product.length == 0){
-      const cartData = await Cart.deleteOne({_id:userSession.userId})
-      res.render('users/user-cart',{message:'cart is empty',totalprice:0,cart:cartData,admin:false})
-    }else
-    res.redirect("/user-cart");
+
+    if (cartData.product.length == 0) {
+      const cartData = await Cart.deleteOne({ _id: userSession.userId });
+      res.render("users/user-cart", {
+        message: "cart is empty",
+        totalprice: 0,
+        cart: cartData,
+        admin: false,
+      });
+    } else res.redirect("/user-cart");
   } catch (error) {
     console.log(error.message);
   }
@@ -424,7 +425,7 @@ const postCheckout = async (req, res) => {
     res.render("users/orderplaced", {
       cart: orderData.product,
       totalprice: forTotal,
-      admin:false
+      admin: false,
     });
   } else if (req.body.payment == "paypal") {
     res.redirect("/paypal");
@@ -438,25 +439,22 @@ const getCheckout = async (req, res) => {
       userID: userSession.userId,
     }).populate("product.productID");
     ship = 10;
-    
-    if(req.session.discountedPrice){
+
+    if (req.session.discountedPrice) {
       res.render("users/checkout", {
         cart: userCart.product,
         cartTotal: req.session.discountedPrice,
         admin: false,
         shipping: ship,
-      })
-    }else{
+      });
+    } else {
       res.render("users/checkout", {
         cart: userCart.product,
         cartTotal: totalCart.totalPrice,
         admin: false,
         shipping: ship,
-      })
+      });
     }
-    
-    
-   ;
   } catch (error) {
     console.log(error.message);
   }
@@ -467,10 +465,16 @@ const paypal = async (req, res) => {
   const orderData = await Order.findOne({ userID: userSession.userId });
   const cartData = await Cart.findOne({ userID: userSession.userId });
   console.log(orderData);
-  if(req.session.discountedPrice){
-    res.render("users/paypal", { total:req.session.discountedPrice,admin:false });
-  }else
-  res.render("users/paypal", { total: cartData.totalPrice+10,admin:false });
+  if (req.session.discountedPrice) {
+    res.render("users/paypal", {
+      total: req.session.discountedPrice,
+      admin: false,
+    });
+  } else
+    res.render("users/paypal", {
+      total: cartData.totalPrice + 10,
+      admin: false,
+    });
 };
 
 const ordersuccesful = async (req, res) => {
@@ -480,43 +484,67 @@ const ordersuccesful = async (req, res) => {
   }).populate("product.productID");
   const forTotal = await Cart.findOne({ userID: userSession.userId });
   console.log("orderData.forTotal");
-  res.render("users/orderplaced", { cart: cartData.product, totalprice: forTotal,admin:false });
+  res.render("users/orderplaced", {
+    cart: cartData.product,
+    totalprice: forTotal,
+    admin: false,
+  });
 };
 
-
-const applycoupon = async(req,res)=>{
+const applycoupon = async (req, res) => {
   try {
-    userSession = req.session
-    coupon=req.body.coupon
-    const couponData = await Coupon.findOne({name:coupon})
+    userSession = req.session;
+    coupon = req.body.coupon;
+    const couponData = await Coupon.findOne({ name: coupon });
     const cartData = await Cart.findOne({ userID: userSession.userId });
-    if(couponData){
-req.session.discountedPrice = cartData.totalPrice - (cartData.totalPrice*couponData.discount)/100
-discountedPrice=req.session.discountedPrice
-console.log(req.session);
+    if (couponData) {
+      req.session.discountedPrice =
+        cartData.totalPrice - (cartData.totalPrice * couponData.discount) / 100;
+      discountedPrice = req.session.discountedPrice;
+      console.log(req.session);
 
-res.redirect('/postCheckout')
-// await Order.findOneAndUpdate({userID: userSession.userId},{$set:{totalPrice:discountedPrice}})
+      res.redirect("/postCheckout");
+      // await Order.findOneAndUpdate({userID: userSession.userId},{$set:{totalPrice:discountedPrice}})
     }
   } catch (error) {
     console.log(error.message);
   }
-}
+};
 
-const viewProductDetails = async(req,res)=>{
+const viewProductDetails = async (req, res) => {
   try {
-id = req.query.id
-    const productData = await Product.findOne({_id:id})
-    console.log(productData)
-    res.render('users/product-detail',{products:productData,admin:false})
+    id = req.query.id;
+    const productData = await Product.findOne({ _id: id });
+    console.log(productData);
+    res.render("users/product-detail", { products: productData, admin: false });
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-}
+};
 
-
-
-
+const OrderHistory = async (req, res) => {
+  try {
+    var page = 1
+    const limit = 8
+    const orderData = await Order.find({ userID: req.session.userId })
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+    const count = await Order.find({
+      userID: req.session.userId,
+    }).countDocuments();
+    res.render("users/order-history", {
+      admin: false,
+      orders: orderData,
+      totalPages: Math.ceil(count / limit),
+      currentpage: page,
+      next: page + 1,
+      prev: page - 1,
+    });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
 
 module.exports = {
   userSignupForm,
@@ -537,5 +565,6 @@ module.exports = {
   paypal,
   ordersuccesful,
   applycoupon,
-  viewProductDetails
+  viewProductDetails,
+  OrderHistory,
 };
