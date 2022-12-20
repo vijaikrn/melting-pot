@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const fast2sms = require("fast-two-sms");
 const Order = require("../models/order-model");
 const Coupon = require("../models/coupon-model");
+const Banner= require('../models/banner-model')
 let isLoggedIn;
 isLoggedIn = false;
 let userSession = false || {};
@@ -135,10 +136,12 @@ const userHomePage = async (req, res) => {
     ],
   }).countDocuments();
   const categoryData = await Category.find();
+  const bannerData = await Banner.find()
   res.render("users/view-productsLoggedIn", {
     admin: false,
     category: categoryData,
     products: productData,
+    banner:bannerData,
     isLoggedIn,
     id: userSession.userId,
     totalPages: Math.ceil(count / limit),
@@ -178,9 +181,12 @@ const userGeneralPage = async (req, res) => {
     ],
   }).countDocuments();
 
+  const bannerData = await Banner.find()
+
   res.render("users/view-products", {
     products: productData,
     category: categoryData,
+    banner:bannerData,
     admin: false,
     totalPages: Math.ceil(count / limit),
     currentpage: page,
@@ -210,14 +216,14 @@ const addToCart = async (req, res) => {
     const checkCart = await Cart.findOne({ userID: userSession.userId });
 
     if (checkCart != null) {
-      console.log("1");
+      // console.log("1");
       const productCheck = await Cart.findOne({
         userID: userSession.userId,
         "product.productID": productID,
       });
 
       if (productCheck != null) {
-        console.log("2");
+        // console.log("2");
         await Cart.updateOne(
           {
             userID: userSession.userId,
@@ -342,10 +348,12 @@ const selectCategory = async (req, res) => {
     console.log(req.query.category);
     console.log(productData);
     const categoryData = await Category.find();
+    const bannerData = await Banner.find()
     console.log(categoryData);
     res.render("users/view-productsLoggedIn", {
       category: categoryData,
       products: productData,
+      banner:bannerData,
       admin: false,
       totalPages: Math.ceil(count / limit),
       currentpage: page,
@@ -422,6 +430,7 @@ const postCheckout = async (req, res) => {
       userID: userSession.userId,
     }).populate("product.productID");
     const forTotal = await Order.findOne({ userID: userSession.userId });
+    await Cart.deleteOne({userID:req.session.userId})
     res.render("users/orderplaced", {
       cart: orderData.product,
       totalprice: forTotal,
@@ -431,6 +440,7 @@ const postCheckout = async (req, res) => {
     res.redirect("/paypal");
   }
 };
+
 
 const getCheckout = async (req, res) => {
   try {
@@ -483,10 +493,11 @@ const ordersuccesful = async (req, res) => {
     userID: userSession.userId,
   }).populate("product.productID");
   const forTotal = await Cart.findOne({ userID: userSession.userId });
+ await Cart.deleteOne({userID:req.session.userId})
   console.log("orderData.forTotal");
   res.render("users/orderplaced", {
     cart: cartData.product,
-    totalprice: forTotal,
+    totalprice: req.session.discountedPrice+10,
     admin: false,
   });
 };
@@ -546,6 +557,16 @@ const OrderHistory = async (req, res) => {
   }
 };
 
+
+// const viewBanner = async(req,res)=>{
+//   try {
+//     const bannerData = await Banner.find()
+//     res.render('users/view-products',{banner:bannerData,admin:false})
+//   } catch (error) {
+//     console.log(error.message);
+//   }
+// }
+
 module.exports = {
   userSignupForm,
   userSignup,
@@ -567,4 +588,5 @@ module.exports = {
   applycoupon,
   viewProductDetails,
   OrderHistory,
+  // viewBanner
 };

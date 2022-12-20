@@ -6,8 +6,10 @@ const multer = require("multer");
 const path = require("path");
 const Order = require("../models/order-model");
 const Coupon = require("../models/coupon-model");
+const Banner = require("../models/banner-model");
 const { userInfo } = require("os");
 const { findOneAndUpdate } = require("../models/category-model");
+const { log } = require("console");
 
 // let isAdminLoggedin = false;
 // let adminSession = false || {};
@@ -73,23 +75,78 @@ const insertProduct = async (req, res) => {
   }
 };
 
+const addBanner = async (req, res) => {
+  try {
+    const banner = new Banner({
+      name: req.body.name,
+      image: req.file.filename,
+    });
+    const bannerData = await banner.save();
+    if (bannerData) {
+      res.render("admin/add-banner", {
+        banner: bannerData,
+        message: "Banner added Successfully!!",
+        admin: true,
+      });
+    } else {
+      res.render("admin/add-banner", {
+        banner: bannerData,
+        message: "Banner adding failed",
+        admin: true,
+      });
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const viewBanners = async (req, res) => {
+  try {
+    const bannerData = await Banner.find();
+    res.render("admin/add-banner", { banner: bannerData, admin: true });
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 const viewProducts = async (req, res) => {
   var search = "";
   if (req.query.search) {
     search = req.query.search;
   }
+  var page = 1;
+  if (req.query.page) {
+    page = req.query.page;
+  }
+
+  const limit = 10;
   const productData = await Product.find({
     $or: [
       { Name: { $regex: ".*" + search + ".*", $options: "i" } },
       { Category: { $regex: ".*" + search + ".*", $options: "i" } },
     ],
-  }).lean();
+  })
+    .lean()
+    .lean()
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
+  const count = await Product.find({
+    $or: [
+      { Name: { $regex: ".*" + search + ".*", $options: "i" } },
+      { Category: { $regex: ".*" + search + ".*", $options: "i" } },
+    ],
+  }).countDocuments();
   // choice = "product";
   // console.log(productData);
   res.render("admin/view-products", {
     products: productData,
     // choice: choice,
     admin: true,
+    totalPages: Math.ceil(count / limit),
+    currentpage: new Number(page),
+    next: new Number(page) + 1,
+    prev: new Number(page) - 1,
   });
   return viewProducts;
 };
@@ -440,6 +497,16 @@ const loadAdminHome = async (req, res) => {
   }
 };
 
+const deleteBanner = async (req, res) => {
+  try {
+    const id = req.query.id;
+    await Banner.deleteOne({ _id: id });
+    res.redirect("/admin/banner");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
 module.exports = {
   insertProduct,
   viewProducts,
@@ -452,7 +519,7 @@ module.exports = {
   viewUsers,
   editProduct,
   editProductPost,
- 
+
   blockUser,
   addCategory,
   addCategoryGet,
@@ -465,4 +532,7 @@ module.exports = {
   addCoupon,
   deleteCoupon,
   loadAdminHome,
+  addBanner,
+  viewBanners,
+  deleteBanner,
 };

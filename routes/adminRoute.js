@@ -58,5 +58,11 @@ adminRoute.post('/delete-coupon',adminController.deleteCoupon)
 
 adminRoute.get('/admin-panel',authAdmin.isLogin,adminController.loadAdminHome)
 
+adminRoute.get('/banner',adminController.viewBanners)
+
+adminRoute.post('/banner',adminController.upload,adminController.addBanner)
+
+adminRoute.post('/delete-banner',adminController.deleteBanner)
+
 
 module.exports = adminRoute;

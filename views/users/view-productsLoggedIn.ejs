@@ -5,9 +5,9 @@
 
 			<div class="flex-w flex-sb-m p-b-52">
 				<div class="flex-w flex-l-m filter-tope-group m-tb-10">
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
-						All Products
-					</button>	
+					<!-- <button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 how-active1" data-filter="*">
+						
+					</button>	 -->
 				</div>
 
 				<div class="flex-w flex-c-m m-tb-10">
@@ -228,12 +228,13 @@
 <section class="section-slide " style="margin-bottom: 8vh;">
 	<div class="wrap-slick1">
 		<div class="slick1">
-			<div class="item-slick1" style="background-image: url(images/slide-01.jpg);">
+			<% for(let i=1;i <=banner.length; i++){ %>
+			<div class="item-slick1" style="background-image: url(/admin/images/<%=banner[i-1].image%>);">
 				<div class="container h-full">
 					<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
 						<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
 							<span class="ltext-101 cl2 respon2">
-								Women Collection 2022
+								Melting Pot Collection 2022
 							</span>
 						</div>
 							
@@ -251,8 +252,9 @@
 					</div>
 				</div>
 			</div>
+			<% } %> 
 
-			<div class="item-slick1" style="background-image: url(images/slide-02.jpg);">
+			<!-- <div class="item-slick1" style="background-image: url(images/slide-02.jpg);">
 				<div class="container h-full">
 					<div class="flex-col-l-m h-full p-t-100 p-b-30 respon5">
 						<div class="layer-slick1 animated visible-false" data-appear="rollIn" data-delay="0">
@@ -265,9 +267,9 @@
 							<h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
 								Jackets & Coats
 							</h2>
-						</div>
+						</div> -->
 							
-						<div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
+						<!-- <div class="layer-slick1 animated visible-false" data-appear="slideInUp" data-delay="1600">
 							<a href="/" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04">
 								Shop Now
 							</a>
@@ -284,8 +286,8 @@
 								Men Collection 2022
 							</span>
 						</div>
-							
-						<div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight" data-delay="800">
+							 -->
+						<!-- <div class="layer-slick1 animated visible-false" data-appear="rotateInUpRight" data-delay="800">
 							<h2 class="ltext-201 cl2 p-t-19 p-b-43 respon1">
 								New arrivals
 							</h2>
@@ -297,7 +299,7 @@
 							</a>
 						</div>
 					</div>
-				</div>
+				</div> -->
 			</div>
 		</div>
 	</div>
@@ -307,9 +309,15 @@
 		
 
 			<div class="row isotope-grid">
+				<div class="p-b-10">
+					<h6 class="ltext-103 cl5">
+						Product Overview
+					</h6>
+				</div>
+	
                 <% for(let i=1;i <=products.length; i++){ %>
 					<% if(products[i-1].isAvailable==1) {%> 
-				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+				<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women" style="margin-top: 6vh; ">
 					<!-- Block2 -->
 					<div class="block2">
 						<div class="block2-pic hov-img0">

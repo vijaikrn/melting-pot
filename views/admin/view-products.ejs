@@ -25,14 +25,14 @@
 </div>
 
 
-        <table class="table mt-3">
+        <table class="table mt-3" style="margin-left: 10vh;width: 180vh;">
   <thead>
     <tr>
-      <th scope="col">Sl No</th>
+      <th scope="col">Sl</th>
       <th scope="col">Product Name</th>
       <th scope="col">Category</th>
       
-      <th scope="col">Description</th>
+      <th scope="col" style="text-align: center;">Description</th>
       <th scope="col">Image</th>
       <th scope="col">Price</th>
       <th scope="col">Action</th>
@@ -110,5 +110,26 @@
 
   </tbody>
 </table>
+<div style="margin-left: 50vh;">
+    <br>
+    <% if(currentpage != 1){ %>
+        <a  href="?page=<%=prev%>" class="btn btn-primary"><</a>
+    
+    <% } %>
+    <% for(let j=1;j<=totalPages;j++){ %>
+        <% if(j==currentpage) {%> 
+        <a  href="?page=<%=j%>" class="btn btn-warning">
+            <%=j%> 
+        </a>
+        <% }else{ %>
+        <a  href="?page=<%=j%>" class="btn btn-primary">
+            <%=j%> 
+        </a>
+             <% } %>
+        <% }%>
+        <a  href="?page=<%=next%>" class="btn btn-primary">></a>
+            <br>
+</div>
+
     </div>
 </section>

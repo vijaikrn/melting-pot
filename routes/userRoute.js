@@ -58,4 +58,6 @@ userRoute.get('/product-detail',userController.viewProductDetails)
 
 userRoute.get('/order-history',auth.isLogin,userController.OrderHistory)
 
+
+
 module.exports = userRoute;
