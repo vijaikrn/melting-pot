@@ -6,7 +6,7 @@ const bcrypt = require("bcrypt");
 const fast2sms = require("fast-two-sms");
 const Order = require("../models/order-model");
 const Coupon = require("../models/coupon-model");
-const Banner= require('../models/banner-model')
+const Banner = require("../models/banner-model");
 let isLoggedIn;
 isLoggedIn = false;
 let userSession = false || {};
@@ -136,12 +136,12 @@ const userHomePage = async (req, res) => {
     ],
   }).countDocuments();
   const categoryData = await Category.find();
-  const bannerData = await Banner.find()
+  const bannerData = await Banner.find();
   res.render("users/view-productsLoggedIn", {
     admin: false,
     category: categoryData,
     products: productData,
-    banner:bannerData,
+    banner: bannerData,
     isLoggedIn,
     id: userSession.userId,
     totalPages: Math.ceil(count / limit),
@@ -181,12 +181,12 @@ const userGeneralPage = async (req, res) => {
     ],
   }).countDocuments();
 
-  const bannerData = await Banner.find()
+  const bannerData = await Banner.find();
 
   res.render("users/view-products", {
     products: productData,
     category: categoryData,
-    banner:bannerData,
+    banner: bannerData,
     admin: false,
     totalPages: Math.ceil(count / limit),
     currentpage: page,
@@ -210,47 +210,70 @@ const userLogout = async (req, res) => {
 
 const addToCart = async (req, res) => {
   try {
+    console.log("check add-to-cart");
     const productID = req.query.id;
     userSession = req.session;
-
+    //const productDetails = await Product.findOne({ _id: productID })
     const checkCart = await Cart.findOne({ userID: userSession.userId });
 
-    if (checkCart != null) {
-      // console.log("1");
+    if (checkCart) {
+      console.log("cart process start");
       const productCheck = await Cart.findOne({
-        userID: userSession.userId,
+        userID: req.session.userId,
         "product.productID": productID,
       });
 
-      if (productCheck != null) {
-        // console.log("2");
+      if (productCheck) {
+        console.log("when product exists");
         await Cart.updateOne(
           {
-            userID: userSession.userId,
+            userID: req.session.userId,
             "product.productID": productID,
           },
           { $inc: { "product.$.quantity": 1 } }
         );
         res.redirect("/home");
       } else {
-        console.log("3");
+        console.log("new product");
         await Cart.updateOne(
-          { userID: userSession.userId },
+          { userID: req.session.userId },
           { $push: { product: { productID: productID, quantity: 1 } } }
         );
         res.redirect("/home");
       }
     } else {
-      console.log("4");
+      console.log("new cart");
       const cart = Cart({
-        userID: userSession.userId,
+        userID: req.session.userId,
         product: [{ productID: productID, quantity: 1 }],
       });
 
       await cart.save();
-      console.log(cart)
+      console.log(cart);
       res.redirect("/home");
     }
+    //-----------------------------------
+    // ID = req.query.id;
+    // console.log(`ID:${req.query.id}`);
+    // userSession = req.session;
+    // const productData = await Cart.findOne({
+    //   userID: userSession.userId,
+    // }).populate("product.productID");
+    // const productIndex = await productData.product.findIndex(
+    //   (index) => index._id == ID
+    // );
+    // productData.product[productIndex].quantity =
+    //   productData.product[productIndex].quantity + quantity;
+    // productData.totalPrice = 0;
+    // const totalPrice = productData.product.reduce((acc, curr) => {
+    //   return acc + curr.productID.Price * curr.quantity;
+    // }, 0);
+
+    // console.log(totalPrice);
+    // productData.totalPrice = totalPrice;
+
+    // await productData.save();
+    //----------------------------------------
   } catch (error) {
     console.log(error.message);
   }
@@ -258,19 +281,21 @@ const addToCart = async (req, res) => {
 
 const loadCart = async (req, res) => {
   userSession = req.session;
-  const totalCart = await Cart.findOne({ userID: userSession.userId });
-  const userCart = await Cart.findOne({ userID: userSession.userId }).populate(
+  const totalCart = await Cart.findOne({ userID: req.session.userId });
+  const userCart = await Cart.findOne({ userID: req.session.userId }).populate(
     "product.productID"
   );
-
+  console.log(userCart.product.length);
   if (userCart.product.length == 0) {
+    console.log(`totalPrice is zero`);
     res.render("users/user-cart", {
       cart: userCart.product,
       isLoggedIn,
       admin: false,
       totalprice: 0,
     });
-  } else if (userCart.product.length != 0) {
+  } else {
+    console.log(`totalPrice is not zero ${totalCart.totalPrice}`);
     res.render("users/user-cart", {
       cart: userCart.product,
       isLoggedIn,
@@ -283,6 +308,8 @@ const loadCart = async (req, res) => {
 const updateQuantity = async (req, res) => {
   try {
     ID = req.query.id;
+    console.log(`ID:${req.query.id}`);
+    console.log(`quantity:${req.body.quantity}`);
     userSession = req.session;
     quantity = req.body.quantity;
     const productData = await Cart.findOne({
@@ -291,7 +318,14 @@ const updateQuantity = async (req, res) => {
     const productIndex = await productData.product.findIndex(
       (index) => index._id == ID
     );
-    productData.product[productIndex].quantity = quantity;
+    if (
+      productData.product[productIndex].quantity === 1 &&
+      req.body.quantity === -1
+    ) {
+      res.json({ quantity: 0 });
+    }
+    productData.product[productIndex].quantity =
+      productData.product[productIndex].quantity + quantity;
     productData.totalPrice = 0;
     const totalPrice = productData.product.reduce((acc, curr) => {
       return acc + curr.productID.Price * curr.quantity;
@@ -302,7 +336,13 @@ const updateQuantity = async (req, res) => {
 
     await productData.save();
     admin: false;
-    res.redirect("/user-cart");
+    console.log(productData.product[productIndex]);
+    res.json({
+      quantity: productData.product[productIndex].quantity,
+      totalPrice: totalPrice,
+      Price:productData.product[productIndex].productID.Price
+    });
+    //res.redirect("/user-cart");
   } catch (error) {
     console.log(error.message);
   }
@@ -348,12 +388,12 @@ const selectCategory = async (req, res) => {
     console.log(req.query.category);
     console.log(productData);
     const categoryData = await Category.find();
-    const bannerData = await Banner.find()
+    const bannerData = await Banner.find();
     console.log(categoryData);
     res.render("users/view-productsLoggedIn", {
       category: categoryData,
       products: productData,
-      banner:bannerData,
+      banner: bannerData,
       admin: false,
       totalPages: Math.ceil(count / limit),
       currentpage: page,
@@ -419,6 +459,7 @@ const postCheckout = async (req, res) => {
     product: cartData.product,
     totalPrice: cartData.totalPrice,
   });
+  console.log(orders);
   await orders.save();
   console.log("order", orders);
   if (req.body.payment == "cod") {
@@ -430,7 +471,7 @@ const postCheckout = async (req, res) => {
       userID: userSession.userId,
     }).populate("product.productID");
     const forTotal = await Order.findOne({ userID: userSession.userId });
-    await Cart.deleteOne({userID:req.session.userId})
+    await Cart.deleteOne({ userID: req.session.userId });
     res.render("users/orderplaced", {
       cart: orderData.product,
       totalprice: forTotal,
@@ -440,7 +481,6 @@ const postCheckout = async (req, res) => {
     res.redirect("/paypal");
   }
 };
-
 
 const getCheckout = async (req, res) => {
   try {
@@ -493,11 +533,11 @@ const ordersuccesful = async (req, res) => {
     userID: userSession.userId,
   }).populate("product.productID");
   const forTotal = await Cart.findOne({ userID: userSession.userId });
- await Cart.deleteOne({userID:req.session.userId})
+  await Cart.deleteOne({ userID: req.session.userId });
   console.log("orderData.forTotal");
   res.render("users/orderplaced", {
     cart: cartData.product,
-    totalprice: req.session.discountedPrice+10,
+    totalprice: req.session.discountedPrice + 10,
     admin: false,
   });
 };
@@ -535,8 +575,8 @@ const viewProductDetails = async (req, res) => {
 
 const OrderHistory = async (req, res) => {
   try {
-    var page = 1
-    const limit = 8
+    var page = 1;
+    const limit = 8;
     const orderData = await Order.find({ userID: req.session.userId })
       .limit(limit * 1)
       .skip((page - 1) * limit)
@@ -556,7 +596,6 @@ const OrderHistory = async (req, res) => {
     console.log(error.message);
   }
 };
-
 
 // const viewBanner = async(req,res)=>{
 //   try {

@@ -26,11 +26,11 @@ userRoute.post("/signup", userController.userSignup);
 
 userRoute.get('/logout',auth.isLogin,userController.userLogout)
 
-userRoute.get('/add-to-cart',auth.isLogin,userController.addToCart)
+userRoute.get('/add-to-cart',userController.addToCart)
 
-userRoute.post('/add-to-cart',auth.isLogin,userController.addToCart)
+// userRoute.post('/add-to-cart',userController.addToCart)
 
-userRoute.get('/user-cart',auth.isLogin,userController.loadCart)
+userRoute.get('/user-cart',userController.loadCart)
 
 userRoute.post('/updateQuantity',auth.isLogin,userController.updateQuantity)
 

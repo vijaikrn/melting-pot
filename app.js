@@ -2,6 +2,7 @@
 
 const express = require("express");
 const path = require("path");
+const logger=require("morgan")
 const expressLayouts = require("express-ejs-layouts");
 const { appendFile } = require("fs");
 
@@ -18,6 +19,7 @@ mongoose.connect(dbpath.dbpath, () => {
   console.log("Database Connected.");
 });
 
+// app.use(logger('dev'));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "public/user")));

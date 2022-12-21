@@ -1,125 +1,185 @@
-	<div class="container">
-		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-		</div>
-	</div>	
-		
+<div class="container">
+  <div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg"></div>
+</div>
 
-	<!-- Shoping Cart -->
-	<!-- <form class="bg0 p-t-75 p-b-85"> -->
-		<div style="margin-top: 5em;">
-		<div class="container">
-			<div class="row">
-				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
-					<div class="m-l-25 m-r--38 m-lr-0-xl">
-						<div class="wrap-table-shopping-cart">
-							<table class="table-shopping-cart">
-								<tr class="table_head">
-									<th class="column-1">Product</th>
-									<th class="column-2"></th>
-									<th class="column-3">Price</th>
-									<th class="column-4">Quantity</th>
-									<th class="column-5">Total</th>
-									<th class="column-5">Delete</th>
-								</tr>
-								<% if(cart.length>0) {
-									for(let i=1;i<=cart.length; i++) { %>
-								<tr class="table_row">
-									<td class="column-1">
-										<div class="how-itemcart1">
-											<img src="/admin/images/<%=cart[i-1].productID.image %>" alt="IMG">
-										</div>
-									</td>
-									<td class="column-2"><%=cart[i-1].productID.Name %></td>
-									<td class="column-3">₹ <%=cart[i-1].productID.Price %></td>
-									
-                        
-									<td class="column-4">
-										<form action="/updateQuantity?id=<%=cart[i-1]._id %>" method="post">
-											<div class="input-group mx- auto" style="width: 100px;">
-												<div class="input-group-btn ">
-													<!-- <button class="btn btn-sm btn-primary btn-minus">
-														<i class="fa fa-minus"></i>
-													</button> -->
-												</div>
-												
-												<input type="number" class="form-control form-control-sm bg-secondary text-center"
-													value="<%=cart[i-1].quantity %>" name="quantity" min="1" max="20">
-												<div class="input-group-btn">
-													<button class="btn btn-sm btn-primary btn-plus">
-														<!-- <i class="fa fa-plus"></i> --><i class="fa fa-refresh" aria-hidden="true"></i>
-													</button>
-												</div>
-											</div>
-										</form>
-									</td>
-									<td class="column-5">₹ <%= cart[i-1].productID.Price * cart[i-1].quantity %></td>
-									
-									<td class="align-middle text-center"><form action="/delete-cart?id=<%=cart[i-1]._id %>" method="post"><button class="btn btn-sm btn-primary" type="submit"><i
-										class="fa fa-times"></i></button></form></td>
-								</tr>
+<!-- Shoping Cart -->
+<!-- <form class="bg0 p-t-75 p-b-85"> -->
+<div style="margin-top: 5em">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+        <div class="m-l-25 m-r--38 m-lr-0-xl">
+          <div class="wrap-table-shopping-cart">
+            <table class="table-shopping-cart">
+              <tr class="table_head">
+                <th class="column-1">Product</th>
+                <th class="column-2"></th>
+                <th class="column-3">Price</th>
+                <th class="column-4">Quantity</th>
+                <th class="column-5">Total</th>
+                <th class="column-5">Delete</th>
+              </tr>
+              <% if(cart.length>0) { for(let i=1;i<=cart.length; i++) { %>
+              <tr class="table_row">
+                <td class="column-1">
+                  <div class="how-itemcart1">
+                    <img
+                      src="/admin/images/<%=cart[i-1].productID.image %>"
+                      alt="IMG"
+                    />
+                  </div>
+                </td>
+                <td class="column-2"><%=cart[i-1].productID.Name %></td>
+                <td class="column-3">₹ <%=cart[i-1].productID.Price %></td>
 
-								<% } }else{ %>
-									<p>cart is empty</p>
-									<%}%>
-							</table>
-						</div>
+                <td class="column-4">
+                  <div>
+                    <div class="input-group mx- auto" style="width: 100px">
+                      <div class="input-group-btn">
+                        <button
+                          class="btn btn-sm btn-primary btn-minus"
+                          onclick="removeCount('<%=cart[i-1]._id %>')"
+                        >
+                          <i class="fa fa-minus"></i>
+                        </button>
+                      </div>
 
-						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
-							<div class="flex-w flex-m m-r-20 m-tb-5">
-								<% if(typeof message !=='undefined' ){%>
-                        <p style="color:green;font-size: larger;">
-                          <%= message %>
-                        </p>
-                        <% } %>
-									
-								<div >
-									
-								</div>
-							</div>
+                      <!-- <input
+                        type="text"
+                        class="form-control form-control-sm bg-secondary text-center"
+                        value="<%=cart[i-1].quantity %>"
+                        name="quantity"
+                        min="1"
+                        max="20"
+                        id="updatedQuantity"
+                      /> -->
+                      <p id="<%=cart[i-1]._id %>" class="mx-2">
+                        <%=cart[i-1].quantity %>
+                      </p>
+                      <div class="input-group-btn">
+                        <button
+                          class="btn btn-sm btn-primary btn-plus"
+                          onclick="AddCount('<%=cart[i-1]._id %>')"
+                        >
+                          <i class="fa fa-plus"></i>
+                          <!-- <i
+                            class="fa fa-refresh"
+                            aria-hidden="true"
+                          ></i> -->
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td class="column-5" id="itemTotal<%=cart[i-1]._id %>">
+                  ₹ <%= cart[i-1].productID.Price * cart[i-1].quantity %>
+                </td>
 
-							
-						</div>
-					</div>
-				</div>
+                <td class="align-middle text-center">
+                  <form
+                    action="/delete-cart?id=<%=cart[i-1]._id %>"
+                    method="post"
+                  >
+                    <button class="btn btn-sm btn-primary" type="submit">
+                      <i class="fa fa-times"></i>
+                    </button>
+                  </form>
+                </td>
+              </tr>
 
-				<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
-					<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm">
-						<h4 class="mtext-109 cl2 p-b-30">
-							Cart Totals
-						</h4>
+              <% } }else{ %>
+              <p>cart is empty</p>
+              <%}%>
+            </table>
+          </div>
 
-						
+          <div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+            <div class="flex-w flex-m m-r-20 m-tb-5">
+              <% if(typeof message !=='undefined' ){%>
+              <p style="color: green; font-size: larger"><%= message %></p>
+              <% } %>
 
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-						<div class="flex-w flex-t p-t-27 p-b-33">
-							<div class="size-208">
-								<span class="mtext-101 cl2">
-									Total:
-								</span>
-							</div>
+      <div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+        <div
+          class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm"
+        >
+          <!-- <h4 class="mtext-109 cl2 p-b-30">Cart Totals</h4> -->
 
-							<div class="size-209 p-t-1">
-								<span class="mtext-110 cl2">
-									₹ <%=totalprice %>
-								</span>
-							</div>
-						</div>
-<form action="/postCheckout">
-	<% if(totalprice==0){%>
-		<button type="button" class="flex-c-m stext-101 cl0 size-116 bg3 bor14  p-lr-15 trans-04 pointer btn disabled" >Proceed to Checkout</button>
-	<%} else {%>
-	<button  class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
-							Proceed to Checkout
-				<%}%>			</button>
-	</form>
-						
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-	<!-- </form> -->
-		
-	
-		
+          <div class="flex-w flex-t p-t-27 p-b-33">
+            <div class="size-208">
+              <!-- <span class="mtext-101 cl2"> Total: </span> -->
+            </div>
 
+            <div class="size-209 p-t-1">
+              <!-- <span>₹ </span><span class="mtext-110 cl2" id="totalPrice"><%=totalprice %></span> -->
+            </div>
+          </div>
+          <form action="/postCheckout">
+            <% if(cart.length==0){%>
+            <button
+              type="button"
+              class="flex-c-m stext-101 cl0 size-116 bg3 bor14 p-lr-15 trans-04 pointer btn disabled"
+            >
+              Proceed to Checkout
+            </button>
+            <%} else {%>
+            <button
+              class="flex-c-m stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer"
+            >
+              Proceed to Checkout <%}%>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- </form> -->
+
+<script>
+  function AddCount(productId) {
+    // productId=document.getElementById('productId').value
+    let count = 1;
+    console.log(productId);
+    updateCount(count, productId);
+  }
+  function removeCount(productId) {
+    let count = -1;
+    console.log(productId);
+    updateCount(count, productId);
+  }
+  function updateCount(count, productId) {
+    $.ajax({
+      url: `/updateQuantity?id=${productId}`,
+      type: "POST",
+      dataType: "json",
+      contentType: "application/json; charset=utf-8",
+      data: JSON.stringify({ quantity: count }),
+      success: function (result) {
+        // when call is sucessfull
+        if (result.quantity === 0) {
+          window.location.href = `delete-cart?id=${productId}`;
+        } else {
+          console.log(`result:${result.quantity}`);
+          quantity = result.quantity;
+          //document.getElementById("updatedQuantity").innerHTML = quantity;
+          qwerty = 5;
+          console.log(productId);
+          document.getElementById(productId).innerHTML = quantity;
+          //document.getElementById("totalPrice").innerHTML = result.totalPrice;          
+          document.getElementById(`itemTotal${productId}`).innerHTML = result.Price*quantity;
+        }
+      },
+      error: function (err) {
+        // check the err for error details
+        console.log(err);
+      },
+    });
+  }
+</script>

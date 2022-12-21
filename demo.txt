@@ -1,3 +1,20 @@
+<script>
+  $.ajax({
+    url: "/updateQuantity/",
+    type: "POST",
+    dataType: "json",
+    contentType: "application/json; charset=utf-8",
+    data: JSON.stringify({ name: "value1", email: "value2" }),
+    success: function (result) {
+      // when call is sucessfull
+    },
+    error: function (err) {
+      // check the err for error details
+    },
+  });
+</script>
+
+ <i class="fa fa-refresh" aria-hidden="true"></i>
  <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Product Category
