@@ -323,7 +323,7 @@
 						<div class="block2-pic hov-img0">
 							<img src="/admin/images/<%=products[i-1].image%>" alt="IMG-PRODUCT">
 
-							<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+							<a href="/product-detail?id=<%= products[i-1]._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
 								Quick View
 							</a>
 						</div>
@@ -346,7 +346,7 @@
 								</a>
 							</div>
 							
-							<a class="btn btn-primary btn-lg btn-block" href="/add-to-cart?id=<%= products._id %>" method="post" type="submit">Add to cart</a>
+							
 								
 							 
 						   
