@@ -14,7 +14,7 @@ const auth = require("../middleware/auth")
 
 userRoute.get("/home", auth.isLogin, userController.userHomePage);
 
-userRoute.get("/",  userController.userGeneralPage);
+userRoute.get("/",auth.isLogout,  userController.userGeneralPage);
 
 userRoute.get("/login",auth.isLogout, userController.userVerifyLogin);
 
@@ -28,7 +28,7 @@ userRoute.get('/logout',auth.isLogin,userController.userLogout)
 
 userRoute.get('/add-to-cart',userController.addToCart)
 
-// userRoute.post('/add-to-cart',userController.addToCart)
+userRoute.post('/add-to-cart',userController.addToCart)
 
 userRoute.get('/user-cart',userController.loadCart)
 

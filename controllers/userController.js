@@ -81,9 +81,9 @@ const userVerifyLogin = async (req, res) => {
             res.render("users/login", { message: "Not user", admin: false });
           } else {
             false;
-            userSession = req.session;
-            userSession.userId = userData._id;
-            isLoggedin = true;
+            // userSession = req.session;
+            req.session.userId = userData._id;
+            // isLoggedin = true;
             res.redirect("/home");
             console.log("logged in");
           }
@@ -143,7 +143,7 @@ const userHomePage = async (req, res) => {
     products: productData,
     banner: bannerData,
     isLoggedIn,
-    id: userSession.userId,
+    id:  req.session.userId,
     totalPages: Math.ceil(count / limit),
     currentpage: page,
     next: page + 1,
@@ -214,7 +214,7 @@ const addToCart = async (req, res) => {
     const productID = req.query.id;
     userSession = req.session;
     //const productDetails = await Product.findOne({ _id: productID })
-    const checkCart = await Cart.findOne({ userID: userSession.userId });
+    const checkCart = await Cart.findOne({ userID: req.session.userId });
 
     if (checkCart) {
       console.log("cart process start");
@@ -245,7 +245,7 @@ const addToCart = async (req, res) => {
       console.log("new cart");
       const cart = Cart({
         userID: req.session.userId,
-        product: [{ productID: productID, quantity: 1 }],
+        product: [{ productID:req.query.id, quantity: 1 }],
       });
 
       await cart.save();
