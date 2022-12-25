@@ -286,8 +286,7 @@ const loadCart = async (req, res) => {
   const userCart = await Cart.findOne({ userID: req.session.userId }).populate(
     "product.productID"
   );
-  // console.log(userCart.product.length);
-  if(userCart){
+  console.log(userCart.product.length);
   if (userCart.product.length == 0) {
     console.log(`totalPrice is zero`);
     res.render("users/user-cart", {
@@ -305,14 +304,7 @@ const loadCart = async (req, res) => {
       totalprice: totalCart.totalPrice,
     });
   }
-}else{
-  res.render('users/user-cart',{
-    cart: userCart.product,
-    isLoggedIn,
-    admin: false,
-    totalprice: 0,
-  })
-}};
+};
 
 const updateQuantity = async (req, res) => {
   try {
