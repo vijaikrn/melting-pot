@@ -8,32 +8,15 @@ const checkoutSchema = mongoose.Schema({
     fname:{
         type:String,
     },
-    lname:{
-        type:String,
-    },
-    email:{
-        type:String,
-    },
+    
+   
     mno:{
-        type:Number,
+        type:String,
     },
     address1:{
         type:String,
     },
-    address2:{
-        type:String,
-    },
-    country:{
-        type:String,
-    },
-    city:{
-        type:String,
-
-    },
-    state:{
-        type:String,
-       
-    },
+    
     zip:{
         type:Number,
        

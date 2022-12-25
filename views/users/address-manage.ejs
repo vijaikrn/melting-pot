@@ -1,0 +1,32 @@
+<section>
+
+    <div class="container" style="margin-top: 5em;">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="text-center">Add Address</h2>
+          <form action="/add-address" method="post">  
+          <label for="">Name</label>
+            <input type="text" name="name" placeholder="Enter full name" class="form-control" />
+            <label for="">Mobile</label>
+            <input type="text" name="mobile" placeholder="Enter mobile number" class="form-control" />
+            
+  
+
+           
+            <label for="">Address</label>
+            <input type="text" name="address" placeholder="Enter address" class="form-control" />
+            <label for="">Pincode</label>
+            <input type="text" name="pincode" placeholder="pincode" class="form-control" />
+            
+            <button type="submit" class="btn btn-success mt-4 mb-2">Submit</button>
+            <% if(typeof message !=='undefined' ){%>
+              <p style="color:green">
+                <%= message %>
+              </p>
+              <% } %>
+          </form>
+  
+        </div>
+      </div>
+    </div>
+  </section>

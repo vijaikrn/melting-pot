@@ -1,0 +1,27 @@
+<section>
+
+    <div class="container" style="margin-top: 5em;">
+      <div class="row">
+        <div class="col-md-6">
+          <h2 class="text-center">Edit Address</h2>
+          <form action="/edit-address" method="post">  
+          <label for="">Name</label>
+            <input type="text" name="name" value="<%=address.Name%>" class="form-control" />
+            <label for="">Mobile</label>
+            <input type="text" name="mobile" value="<%= address.Mobile %>" class="form-control" />
+            <label for="">Address</label>
+            <input type="text" name="address" value="<%=address.Address%>" class="form-control" />
+            <label for="">Pincode</label>
+            <input type="text" name="pincode"value="<%=address.Pincode%>" class="form-control" />
+           
+            <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
+                                          <input type="hidden" name="id" value="<%= address._id %>">
+                                        <button type="submit" value="Update address" class="btn btn-primary btn-lg">Save</button>
+                                        <a href="/address" class="btn btn-primary ml-2 btn-lg">Go Back</a>
+                                      </div>
+          </form>
+  
+        </div>
+      </div>
+    </div>
+  </section>

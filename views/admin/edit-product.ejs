@@ -16,7 +16,9 @@
           <label for="">Description</label>
           <input type="text" name="Description" value="<%=product.Description%>" class="form-control" />
           <label for="">Image</label>
-          <input type="file" name="image" class="form-control" />
+          <input type="file" name="image" class="form-control" accept="image/*"/>
+          <label for="">Image</label>
+          <input type="file" name="image" class="form-control"accept="image/*" />
           <div class="d-flex justify-content-center mx-4 mb-3 mb-lg-4">
                                         <input type="hidden" name="id" value="<%= product._id %>">
                                       <button type="submit" value="Update Product" class="btn btn-primary btn-lg">Save</button>

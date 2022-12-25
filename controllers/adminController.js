@@ -11,7 +11,7 @@ const { userInfo } = require("os");
 const { findOneAndUpdate } = require("../models/category-model");
 const { log } = require("console");
 
-// let isAdminLoggedin = false;
+let isAdminLoggedin = false;
 // let adminSession = false || {};
 // let choice;
 
@@ -24,19 +24,32 @@ const securePassword = async (password) => {
   }
 };
 
-//multer
-let Storage = multer.diskStorage({
-  destination: "./public/admin/images",
-  filename: (req, file, cb) => {
-    cb(
-      null,
-      file.fieldname + "_" + Date.now() + path.extname(file.originalname)
-    );
-  },
-});
-let upload = multer({
-  storage: Storage,
-}).single("image");
+
+
+let storage= multer.diskStorage({
+    destination:function(req,files,cb){
+        cb(null,'./public/admin/images')
+    },
+    filename:function(req,file,cb){
+        let ext = path.extname(file.originalname)
+        cb(null,file.fieldname +'-' +Date.now() + ext)
+    }
+})
+
+const store= multer({storage:storage})
+
+// let Storage = multer.diskStorage({
+//   destination: "./public/admin/images",
+//   filename: (req, file, cb) => {
+//     cb(
+//       null,
+//       file.fieldname + "_" + Date.now() + path.extname(file.originalname)
+//     );
+//   },
+// });
+// let upload = multer({
+//   storage: Storage,
+// }).single("image");
 
 //admin add product page
 const addProducts = async (req, res) => {
@@ -53,7 +66,8 @@ const insertProduct = async (req, res) => {
       Description: req.body.Description,
       Price: req.body.Price,
       Category: req.body.Category,
-      image: req.file.filename,
+       image : req.files[0] && req.files[0].filename ? req.files[0].filename:"",
+      image2 : req.files[1] && req.files[1].filename ? req.files[1].filename:""
     });
     console.log(product);
     const productData = await product.save();
@@ -82,15 +96,16 @@ const addBanner = async (req, res) => {
       image: req.file.filename,
     });
     const bannerData = await banner.save();
-    if (bannerData) {
+    const banners = await Banner.find()
+    if (bannerData && banners) {
       res.render("admin/add-banner", {
-        banner: bannerData,
+        banner: banners,
         message: "Banner added Successfully!!",
         admin: true,
       });
     } else {
       res.render("admin/add-banner", {
-        banner: bannerData,
+        banner: banners,
         message: "Banner adding failed",
         admin: true,
       });
@@ -169,6 +184,7 @@ const adminLogin = async (req, res) => {
           res.render("admin/admin-login", {
             message: "incorrect credentials,please try again",
             admin: true,
+
           });
           // console.log("is admin is 0");
         } else {
@@ -278,7 +294,8 @@ const editProductPost = async (req, res) => {
           Serial: req.body.Serial,
           Price: req.body.Price,
           Category: req.body.Category,
-          image: req.file.filename,
+           image : req.files[0] && req.files[0].filename ? req.files[0].filename:"",
+          image2 : req.files[1] && req.files[1].filename ? req.files[1].filename:""
         },
       }
     );
@@ -507,11 +524,21 @@ const deleteBanner = async (req, res) => {
   }
 };
 
+const salesReport = async(req,res)=>{
+  try {
+    const productData = await Product.find()
+    res.render('admin/sales-report',{product:productData,admin:true})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
 module.exports = {
   insertProduct,
   viewProducts,
   addProducts,
-  upload,
+  store,
   adminLoginGet,
   adminLogin,
   adminLogout,
@@ -519,7 +546,7 @@ module.exports = {
   viewUsers,
   editProduct,
   editProductPost,
-
+salesReport,
   blockUser,
   addCategory,
   addCategoryGet,

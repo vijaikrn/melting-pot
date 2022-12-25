@@ -11,9 +11,16 @@ const productSchema = new mongoose.Schema({
 
   Category: { type: String, required: true },
 
-  image: { type: String, required: true },
+  image: { type: String },
 
-  isAvailable:{type:Number ,default:1}
+  image2: { type: String},
+
+
+  isAvailable:{type:Number ,default:1},
+
+  quantity :{type:Number},
+
+  Sales:{type:Number,default:0}
 
   
 });

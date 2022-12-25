@@ -16,7 +16,7 @@ adminRoute.get("/", authAdmin.isLogin, adminController.viewProducts);
 
 adminRoute.get("/add-product", adminController.addProducts);
 
-adminRoute.post("/add-product",adminController.upload,adminController.insertProduct);
+adminRoute.post("/add-product",adminController.store.any(),adminController.insertProduct);
 
 adminRoute.get("/login", authAdmin.isLogout, adminController.adminLoginGet);
 
@@ -24,23 +24,23 @@ adminRoute.post("/login", authAdmin.isLogout, adminController.adminLogin);
 
 adminRoute.get("/logout", authAdmin.isLogin, adminController.adminLogout);
 
-adminRoute.get("/users", adminController.viewUsers);
+adminRoute.get("/users",authAdmin.isLogin, adminController.viewUsers);
 
 adminRoute.get("/edit-product",authAdmin.isLogin, adminController.editProduct);
 
-adminRoute.post("/edit-product",adminController.upload, adminController.editProductPost);
+adminRoute.post("/edit-product",adminController.store.any(), adminController.editProductPost);
 
 adminRoute.get('/delete-product',authAdmin.isLogin,adminController.deleteProducts)
 
 adminRoute.get('/block-user',authAdmin.isLogin,adminController.blockUser)
 
-adminRoute.get('/add-category',adminController.addCategoryGet)
+adminRoute.get('/add-category',authAdmin.isLogin,adminController.addCategoryGet)
 
 adminRoute.post('/add-category',adminController.addCategory)
 
 adminRoute.post('/delete-category',adminController.deleteCategory)
 
-adminRoute.get('/order-management',adminController.viewOrders)
+adminRoute.get('/order-management',authAdmin.isLogin,adminController.viewOrders)
 
 adminRoute.post('/order-management',adminController.viewOrders)
 
@@ -50,7 +50,7 @@ adminRoute.post('/cancel-order',adminController.cancelOrder)
 
 adminRoute.post('/deliver-order',adminController.deliverOrder)
 
-adminRoute.get('/manage-coupon',adminController.manageCouponGet)
+adminRoute.get('/manage-coupon',authAdmin.isLogin,adminController.manageCouponGet)
 
 adminRoute.post('/add-coupon',adminController.addCoupon)
 
@@ -58,11 +58,13 @@ adminRoute.post('/delete-coupon',adminController.deleteCoupon)
 
 adminRoute.get('/admin-panel',authAdmin.isLogin,adminController.loadAdminHome)
 
-adminRoute.get('/banner',adminController.viewBanners)
+adminRoute.get('/banner',authAdmin.isLogin,adminController.viewBanners)
 
-adminRoute.post('/banner',adminController.upload,adminController.addBanner)
+adminRoute.post('/banner',adminController.store.any(),adminController.addBanner)
 
 adminRoute.post('/delete-banner',adminController.deleteBanner)
+
+adminRoute.get('/sales-report',authAdmin.isLogin,adminController.salesReport)
 
 
 module.exports = adminRoute;

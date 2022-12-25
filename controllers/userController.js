@@ -7,6 +7,7 @@ const fast2sms = require("fast-two-sms");
 const Order = require("../models/order-model");
 const Coupon = require("../models/coupon-model");
 const Banner = require("../models/banner-model");
+const Address = require('../models/address-model')
 let isLoggedIn;
 isLoggedIn = false;
 let userSession = false || {};
@@ -285,7 +286,8 @@ const loadCart = async (req, res) => {
   const userCart = await Cart.findOne({ userID: req.session.userId }).populate(
     "product.productID"
   );
-  console.log(userCart.product.length);
+  // console.log(userCart.product.length);
+  if(userCart){
   if (userCart.product.length == 0) {
     console.log(`totalPrice is zero`);
     res.render("users/user-cart", {
@@ -303,7 +305,14 @@ const loadCart = async (req, res) => {
       totalprice: totalCart.totalPrice,
     });
   }
-};
+}else{
+  res.render('users/user-cart',{
+    cart: userCart.product,
+    isLoggedIn,
+    admin: false,
+    totalprice: 0,
+  })
+}};
 
 const updateQuantity = async (req, res) => {
   try {
@@ -446,31 +455,56 @@ const postCheckout = async (req, res) => {
   const orders = new Order({
     userID: userSession.userId,
     fname: req.body.fname,
-    lname: req.body.lname,
-    email: req.body.email,
     mno: req.body.mno,
     address1: req.body.address1,
-    address2: req.body.address2,
-    country: req.body.country,
-    city: req.body.city,
-    state: req.body.state,
     zip: req.body.zip,
     payment: req.body.payment,
     product: cartData.product,
     totalPrice: cartData.totalPrice,
   });
-  console.log(orders);
+
+
+  
   await orders.save();
-  console.log("order", orders);
+
+  req.session.currentOrder = orders._id
+
+  const order = await Order.findById({_id:req.session.currentOrder})
+    const productDetails = await Product.find({isAvailable:1})
+        for(let i=0;i<productDetails.length;i++){
+            for(let j=0;j<order.product.length;j++){
+             if(productDetails[i]._id.equals(order.product[j].productID)){
+                 productDetails[i].Sales+=order.product[j].quantity;
+             }    
+            }productDetails[i].save()
+         }
+
+    // const productUpdate = await Product.findByIdAndUpdate({_id:orders.product.productID},{$dec:{quantity:orders.product.quantity}})
+    // await productUpdate.save()
+    // console.log(productUpdate);
+  
   if (req.body.payment == "cod") {
     await Order.findOneAndUpdate(
-      { userID: userSession.userId },
+      { _id: req.session.currentOrder },
       { status: "billed" }
     );
     const orderData = await Order.findOne({
-      userID: userSession.userId,
+    _id: req.session.currentOrder,
     }).populate("product.productID");
-    const forTotal = await Order.findOne({ userID: userSession.userId });
+    const forTotal = await Order.findOne({ _id: req.session.currentOrder});
+   
+    const cartData = await Cart.findOne({userID:req.session.userId})
+    console.log(cartData);
+    const productData = await Product.find()
+    for (let key of cartData.product) {
+      console.log(key.productID, " + ", key.quantity);
+      for (let prod of productData) {
+        if (new String(prod._id).trim() == new String(key.productID).trim()) {
+          prod.quantity = prod.quantity - key.quantity;
+          await prod.save();
+        }
+      }
+    }
     await Cart.deleteOne({ userID: req.session.userId });
     res.render("users/orderplaced", {
       cart: orderData.product,
@@ -484,23 +518,35 @@ const postCheckout = async (req, res) => {
 
 const getCheckout = async (req, res) => {
   try {
+    
+    
     const totalCart = await Cart.findOne({ userID: userSession.userId });
     const userCart = await Cart.findOne({
       userID: userSession.userId,
     }).populate("product.productID");
     ship = 10;
 
+    const selectAddress = await Address.find({userID:req.session.userId})
+    
+const savedAddress = await Address.findOne({_id:req.query.id})
+
+
+
     if (req.session.discountedPrice) {
       res.render("users/checkout", {
+        savedaddress:savedAddress,
         cart: userCart.product,
         cartTotal: req.session.discountedPrice,
+        address :selectAddress,
         admin: false,
         shipping: ship,
       });
     } else {
       res.render("users/checkout", {
         cart: userCart.product,
+        savedaddress:savedAddress,
         cartTotal: totalCart.totalPrice,
+        address :selectAddress,
         admin: false,
         shipping: ship,
       });
@@ -529,10 +575,10 @@ const paypal = async (req, res) => {
 
 const ordersuccesful = async (req, res) => {
   userSession = req.session;
-  const cartData = await Cart.findOne({
-    userID: userSession.userId,
+  const cartData = await Order.findOne({
+   _id:req.session.currentOrder,
   }).populate("product.productID");
-  const forTotal = await Cart.findOne({ userID: userSession.userId });
+  const forTotal = await Order.findOne({ _id: req.session.currentOrder });
   await Cart.deleteOne({ userID: req.session.userId });
   console.log("orderData.forTotal");
   res.render("users/orderplaced", {
@@ -597,14 +643,83 @@ const OrderHistory = async (req, res) => {
   }
 };
 
-// const viewBanner = async(req,res)=>{
-//   try {
-//     const bannerData = await Banner.find()
-//     res.render('users/view-products',{banner:bannerData,admin:false})
-//   } catch (error) {
-//     console.log(error.message);
-//   }
-// }
+const saveAddress = async(req,res)=>{
+  try {
+    const address = Address({
+      Name:req.body.name,
+      Mobile:req.body.mobile,
+      Address:req.body.address,
+      Pincode:req.body.pincode,
+      userID:req.session.userId
+    })
+    const addressData = await address.save()
+    res.render('users/address-manage',{address:addressData,admin:false})
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+const getAddress = async(req,res)=>{
+  try {
+    res.render('users/address-manage',{admin:false})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+
+const showAddress = async(req,res)=>{
+
+  try {
+    const address = await Address.find({ userID:req.session.userId})
+    res.render('users/show-address',{address:address,admin:false})
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+const editAddress = async (req, res) => {
+  try {
+    const id = req.query.id;
+    console.log(id);
+    const addressData = await Address.findById({ _id: id });
+   
+    if (addressData ) {
+      res.render("users/edit-address", { address: addressData, admin: true });
+    } else {
+      res.redirect("/address");
+    }
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const editAddressPost = async (req, res) => {
+  try {
+    const addressData = await Address.findByIdAndUpdate(
+      { _id: req.body.id },
+      {
+        $set: {
+          Name:req.body.name,
+          Mobile:req.body.mobile,
+          Address:req.body.address,
+          Pincode:req.body.pincode,
+          userID:req.session.userId
+        },
+      }
+    );
+    res.redirect("/address");
+  } catch (error) {
+    console.log(error.message);
+  }
+};
+
+const deleteAddress = async (req, res) => {
+  const id = req.query.id;
+   await Address.deleteOne({ _id: id });
+
+  res.redirect("/address");
+};
 
 module.exports = {
   userSignupForm,
@@ -627,5 +742,9 @@ module.exports = {
   applycoupon,
   viewProductDetails,
   OrderHistory,
-  // viewBanner
+  saveAddress,
+  showAddress,getAddress,
+  editAddress,
+  editAddressPost,
+  deleteAddress
 };

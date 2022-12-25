@@ -23,7 +23,9 @@
           <label for="">Description</label>
           <input type="text" name="Description" placeholder="Describe the product" class="form-control" />
           <label for="">Image</label>
-          <input type="file" name="image" placeholder="Upload product image" class="form-control" />
+          <input type="file" name="image" placeholder="Upload product image" class="form-control"accept="image/*" />
+          <label for="">Image 2</label>
+          <input type="file" name="image" placeholder="Upload product image" class="form-control"accept="image/*" />
           <button type="submit" class="btn btn-success mt-4 mb-2">Submit</button>
           <% if(typeof message !=='undefined' ){%>
             <p style="color:green">

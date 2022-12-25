@@ -6,16 +6,16 @@
 <div class="container-fluid" >
   <div class="row d-inline-flex">
     <div class="col d-inline-flex">
-     <a class="btn btn-secondary" href="/admin/add-product" role="button">Add New Product</a>
+     <a class="btn btn-secondary" href="/add-address" role="button">Add New Address</a>
      
   
 </div> 
     </div>
     <div class="col-6 d-inline-flex">
-      <form class="form-inline">
+      <!-- <form class="form-inline">
     <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="search">
     <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-  </form>
+  </form> -->
     </div>
     <div class="col">
      
@@ -29,53 +29,41 @@
   <thead>
     <tr>
       <th scope="col">Sl</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Category</th>
+      <th scope="col">Name</th>
+      <th scope="col">Mobile</th>
       
-      <th scope="col">Stock</th>
-      <th scope="col">Sales</th>
-      <th scope="col">Image</th>
-      <th scope="col">Price</th>
+      <th scope="col" style="text-align: center;">Address</th>
+      <th scope="col">Pincode</th>
+      
       <th scope="col">Action</th>
      
       
     </tr>
   </thead>
-  <tbody>
-    <% if( products.length> 0){ %>
-      <% for(let i=1;i <=products.length; i++){ %>
-        <% if(products[i-1].isAvailable==1) {%> 
+  <tbody><%if(address){%>
+    <% if( address.length> 0){ %>
+      <% for(let i=1;i <=address.length; i++){ %>
+        
           <tr>
               <th scope="row">
                   <%= i %>
               </th>
               <td>
-                  <%= products[i-1].Name %>
+                  <%= address[i-1].Name %>
               </td>
               <td>
-                  <%= products[i-1].Category %>
+                  <%= address[i-1].Mobile %>
               </td>
              
               <td>
-                  <%= products[i-1].quantity %>
+                  <%= address[i-1].Address %>
               </td>
-
-              <td>
-                <%= products[i-1].Sales %>
-            </td>
+              
               
               <td>
-                  <% if(products[i-1].image) { %>
-                      <img src="/admin/images/<%= products[i-1].image %>"
-                          width="40vw" height="40vh">
-                      <% }else{ %>
-                          Image Not Found
-                          <% } %>
-              </td>
-              <td>
-                <%= products[i-1].Price %>
+                <%= address[i-1].Pincode %>
             </td>
-              <td><a href="/admin/edit-product?id=<%= products[i-1]._id %>"><i
+              <td><a href="/edit-address?id=<%= address[i-1]._id %>"><i
                           style="color: green;"
                           class="m-r-5 mdi mdi-border-color"></i>Edit</a><br><a
                       data-toggle="modal" style="color: red"; data-target="
@@ -96,45 +84,26 @@
                       </div>
                       <div class="modal-body"> Are you sure you want to delete the
                           item : <strong>
-                              <%= products[i-1].productName %>
+                              <%= address[i-1].Name %>
                           </strong> </div>
                       <div class="modal-footer"> <button type="button"
                               class="btn btn-secondary"
                               data-dismiss="modal">Close</button> <a
-                              href="/admin/delete-product?id=<%= products[i-1]._id %>"
+                              href="/delete-address?id=<%= address[i-1]._id %>"
                               type="button" class="btn btn-danger">Delete Item</a>
                       </div>
                   </div>
               </div>
           </div>
-          <% }}} else { %>
+          <% }} else { %>
               <tr>
-                  <td colspan="5">no products exists</td>
+                  <td colspan="5">no address exists</td>
               </tr>
               <% } %>
-
+              <%} %>
   </tbody>
 </table>
-<div style="margin-left: 50vh;">
-    <br>
-    <% if(currentpage != 1){ %>
-        <a  href="?page=<%=prev%>" class="btn btn-primary"><</a>
-    
-    <% } %>
-    <% for(let j=1;j<=totalPages;j++){ %>
-        <% if(j==currentpage) {%> 
-        <a  href="?page=<%=j%>" class="btn btn-warning">
-            <%=j%> 
-        </a>
-        <% }else{ %>
-        <a  href="?page=<%=j%>" class="btn btn-primary">
-            <%=j%> 
-        </a>
-             <% } %>
-        <% }%>
-        <a  href="?page=<%=next%>" class="btn btn-primary">></a>
-            <br>
-</div>
+
 
     </div>
 </section>

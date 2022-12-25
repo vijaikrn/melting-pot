@@ -14,7 +14,7 @@ const auth = require("../middleware/auth")
 
 userRoute.get("/home", auth.isLogin, userController.userHomePage);
 
-userRoute.get("/",auth.isLogout,  userController.userGeneralPage);
+userRoute.get("/",  userController.userGeneralPage);
 
 userRoute.get("/login",auth.isLogout, userController.userVerifyLogin);
 
@@ -26,11 +26,11 @@ userRoute.post("/signup", userController.userSignup);
 
 userRoute.get('/logout',auth.isLogin,userController.userLogout)
 
-userRoute.get('/add-to-cart',userController.addToCart)
+userRoute.get('/add-to-cart',auth.isLogin,userController.addToCart)
 
-userRoute.post('/add-to-cart',userController.addToCart)
+userRoute.post('/add-to-cart',auth.isLogin,userController.addToCart)
 
-userRoute.get('/user-cart',userController.loadCart)
+userRoute.get('/user-cart',auth.isLogin,userController.loadCart)
 
 userRoute.post('/updateQuantity',auth.isLogin,userController.updateQuantity)
 
@@ -57,6 +57,20 @@ userRoute.post('/apply-coupon',auth.isLogin,userController.applycoupon)
 userRoute.get('/product-detail',userController.viewProductDetails)
 
 userRoute.get('/order-history',auth.isLogin,userController.OrderHistory)
+
+userRoute.get('/add-address',auth.isLogin, userController.getAddress)
+
+userRoute.post('/add-address', userController.saveAddress)
+
+userRoute.get('/address',auth.isLogin,userController.showAddress)
+
+userRoute.get('/edit-address',userController.editAddress)
+
+userRoute.post('/edit-address',userController.editAddressPost)
+
+userRoute.get('/delete-address',userController.deleteAddress)
+
+
 
 
 
